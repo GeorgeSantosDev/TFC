@@ -5,11 +5,12 @@ import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 import User from '../database/models/user.model'
-import { user,
-  loginRequestBody,
-  loginRequestBodyWithoutEmail,
-  loginRequestBodyWithoutPassword,
-  invalidLoginBody } from './mocks/user.mocks';
+import { loginBody,
+  user,
+  loginBodyNoEmail,
+  loginBodyNoPassword,
+  loginBodyInvalidEmail,
+  loginBodyInvalidPassword } from './mocks/user.mocks';
 
 import { Response } from 'superagent';
 
@@ -33,7 +34,7 @@ describe('Test login path', () => {
     })
 
     it('should return a token as Response and status 200', async () => {
-      chaiHttpResponse = await chai.request(app).post('/login').send(loginRequestBody);
+      chaiHttpResponse = await chai.request(app).post('/login').send(loginBody);
 
       const { body, status } = chaiHttpResponse;
 
@@ -56,7 +57,7 @@ describe('Test login path', () => {
     })
 
     it('should return status 400 and errro message when do not have email field', async () => {
-      chaiHttpResponse = await chai.request(app).post('/login').send(loginRequestBodyWithoutEmail);
+      chaiHttpResponse = await chai.request(app).post('/login').send(loginBodyNoEmail);
       const { body, status } = chaiHttpResponse;
 
       expect(body.message).to.be.equal('All fields must be filled');
@@ -64,7 +65,7 @@ describe('Test login path', () => {
     });
 
     it('should return status 400 and errro message when do not have password field', async () => {
-      chaiHttpResponse = await chai.request(app).post('/login').send(loginRequestBodyWithoutPassword);
+      chaiHttpResponse = await chai.request(app).post('/login').send(loginBodyNoPassword);
       const { body, status } = chaiHttpResponse;
 
       expect(body.message).to.be.equal('All fields must be filled');
@@ -85,8 +86,16 @@ describe('Test login path', () => {
       (User.findOne as sinon.SinonStub).restore();
     })
 
-    it('should return status 401 and errro message when have an invalid field', async () => {
-      chaiHttpResponse = await chai.request(app).post('/login').send(invalidLoginBody);
+    it('should return status 401 and error message when have an invalid email field', async () => {
+      chaiHttpResponse = await chai.request(app).post('/login').send(loginBodyInvalidEmail);
+      const { body, status } = chaiHttpResponse;
+
+      expect(body.message).to.be.equal('Incorrect email or password');
+      expect(status).to.be.equal(401);
+    });
+
+    it('should return status 401 and error message when have an invalid password field', async () => {
+      chaiHttpResponse = await chai.request(app).post('/login').send(loginBodyInvalidPassword);
       const { body, status } = chaiHttpResponse;
 
       expect(body.message).to.be.equal('Incorrect email or password');

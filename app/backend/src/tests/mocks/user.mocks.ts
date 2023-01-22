@@ -1,18 +1,25 @@
-const loginRequestBodyWithoutEmail = {
-  password: 'tewtfsdçfjigwfljhwfghwiiugfwef.151jfjh5f65fg',
-};
-
-const loginRequestBodyWithoutPassword = {
-  email: 'manager@email.com',
+const loginBody = {
+  email: 'admin@admin.com',
+  password: 'secret_admin',
 }
 
-const loginRequestBody = {
-  ...loginRequestBodyWithoutEmail,
-  ...loginRequestBodyWithoutPassword
+const loginBodyNoEmail = {
+  email: '',
+  password: 'secret_admin'
 }
 
-const invalidLoginBody = {
+const loginBodyNoPassword ={
+  email: 'admin@admin.com',
+  password: '',
+}
+
+const loginBodyInvalidEmail = {
   email: 'teste@teste.com',
+  password: 'secret_admin',
+}
+
+const loginBodyInvalidPassword = {
+  email: 'admin@admin.com',
   password: '123456',
 }
 
@@ -20,13 +27,14 @@ const user = {
   id: 1,
   username: 'Manager',
   role: 'Admin',
-  ...loginRequestBody,
+  ...loginBody,
 }
 
 export {
+  loginBody,
   user,
-  loginRequestBody,
-  loginRequestBodyWithoutEmail,
-  loginRequestBodyWithoutPassword,
-  invalidLoginBody
+  loginBodyNoEmail,
+  loginBodyNoPassword,
+  loginBodyInvalidEmail,
+  loginBodyInvalidPassword
 }
