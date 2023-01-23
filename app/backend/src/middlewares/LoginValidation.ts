@@ -33,6 +33,9 @@ export default class LoginValidation {
         throw new HttpException(401, 'Incorrect email or password');
       }
 
+      const { role } = response;
+      req.body.role = role;
+
       next();
     } catch (error) {
       next(error);
