@@ -4,13 +4,15 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import User from '../database/models/user.model'
-import { loginBody,
+import User from '../database/models/user.model';
+import {
+  loginBody,
   user,
   loginBodyNoEmail,
   loginBodyNoPassword,
   loginBodyInvalidEmail,
-  loginBodyInvalidPassword } from './mocks/user.mocks';
+  loginBodyInvalidPassword
+} from './mocks/user.mocks';
 
 import { Response } from 'superagent';
 
@@ -103,4 +105,16 @@ describe('Test login path', () => {
     });
   });
 
+  describe('Test if login/validate return correctly the user role', () => {
+    let chaiHttpResponse: Response;
+
+    it('should return status 200 and message { role: userRole }', async () => {
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwicm9sZSI6IkFkbWluIn0sImlhdCI6MTY3NDUwMDQ0NCwiZXhwIjoxNjc0NTA0MDQ0fQ.qlCMhygOp2QNG_C2lPYqXcEpaAxeTvRENrf5kvAQhWI'
+      chaiHttpResponse = await chai.request(app).get('/login/validate').set({ Authorization:  token});
+      const { body, status } = chaiHttpResponse;
+
+      expect(body).to.have.property('role');
+      expect(status).to.be.equal(200);
+    });
+  });
 });
