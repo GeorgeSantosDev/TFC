@@ -1,5 +1,4 @@
 import LoginService from './login.service';
+import TeamService from './team.service';
 
-const d = 1;
-
-export { LoginService, d };
+export { LoginService, TeamService };
