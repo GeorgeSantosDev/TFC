@@ -6,7 +6,6 @@ import chaiHttp = require('chai-http');
 import { app } from '../app';
 import Team from '../database/models/team.model';
 import { allTeams, team } from './mocks/team.mocks';
-import { ITeam } from '../interfaces';
 
 import { Response } from 'superagent';
 
@@ -22,7 +21,7 @@ describe('Test team path', () => {
     before(async () => {
       sinon
         .stub(Team, "findAll")
-        .resolves(allTeams as ITeam[]);
+        .resolves(allTeams as Team[]);
     });
 
     after(() => {
@@ -48,7 +47,7 @@ describe('Test team path', () => {
     before(async () => {
       sinon
         .stub(Team, "findByPk")
-        .resolves(team as ITeam);
+        .resolves(team as Team);
     });
 
     after(() => {
