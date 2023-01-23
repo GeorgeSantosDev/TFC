@@ -1,8 +1,7 @@
 import LoginController from './login.controller';
-
-const d = '';
+import TeamController from './team.controller';
 
 export {
   LoginController,
-  d,
+  TeamController,
 };
