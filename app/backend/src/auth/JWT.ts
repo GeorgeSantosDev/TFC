@@ -23,15 +23,9 @@ export default class Token {
       throw new HttpException(401, 'Token not found');
     }
 
-    const verify = jwt.verify(token, this._secret);
-
-    if (!verify) {
-      throw new HttpException(401, 'Expired or invalid token');
-    }
-
     try {
-      const decodedToken = jwt.decode(token) as unknown as IToken;
-      req.body.role = decodedToken.data.role;
+      const verify = jwt.verify(token, this._secret) as unknown as IToken;
+      req.body.role = verify.data.role;
 
       next();
     } catch (error) {
