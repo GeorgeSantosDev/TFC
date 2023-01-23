@@ -1,8 +1,7 @@
 import loginRouter from './login.routes';
-
-const d = '';
+import teamsRouter from './teams.routes';
 
 export {
   loginRouter,
-  d,
+  teamsRouter,
 };
