@@ -1,4 +1,7 @@
 import * as express from 'express';
+import { loginRouter } from './routes';
+import ErrorMiddleware from './middlewares/errorMiddleware';
+import HttpException from './utils/HttpException';
 
 class App {
   public app: express.Express;
@@ -7,9 +10,20 @@ class App {
     this.app = express();
 
     this.config();
-
+    this.routes();
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
+
+    this.app.use((
+      err: HttpException,
+      req:express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ) => ErrorMiddleware.err(err, req, res, next));
+  }
+
+  private routes(): void {
+    this.app.use('/login', loginRouter);
   }
 
   private config():void {
