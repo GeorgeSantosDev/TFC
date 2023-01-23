@@ -109,7 +109,7 @@ describe('Test login path', () => {
     let chaiHttpResponse: Response;
 
     it('should return status 200 and message { role: userRole }', async () => {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwicm9sZSI6IkFkbWluIn0sImlhdCI6MTY3NDUwMDQ0NCwiZXhwIjoxNjc0NTA0MDQ0fQ.qlCMhygOp2QNG_C2lPYqXcEpaAxeTvRENrf5kvAQhWI'
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwicm9sZSI6IkFkbWluIn0sImlhdCI6MTY3NDUwMDQ0NCwiZXhwIjoxNjc0NTA0MDQ0fQ.qlCMhygOp2QNG_C2lPYqXcEpaAxeTvRENrf5kvAQhWI';
       chaiHttpResponse = await chai.request(app).get('/login/validate').set({ Authorization:  token});
       const { body, status } = chaiHttpResponse;
 
