@@ -33,8 +33,8 @@ describe('Test matches path', () => {
 
       const { body, status } = chaiHttpResponse;
 
-      expect(body).to.have.length(3);
-      expect(body[0]).to.have.property('teamName');
+      expect(body).to.have.length(2);
+      expect(body[0].homeTeam).to.have.property('teamName');
       expect(body[0]).to.have.property('id');
       expect(status).to.be.equal(200);
     });
@@ -58,10 +58,9 @@ describe('Test matches path', () => {
 
       const { body, status } = chaiHttpResponse;
 
-      expect(body).to.have.length(3);
-      expect(body[0].inProgess).to.be.true;
-      expect(body[1].inProgess).to.be.true;
-      expect(body[2].inProgess).to.be.true;
+      expect(body).to.have.length(2);
+      expect(body[0].inProgress).to.be.true;
+      expect(body[1].inProgress).to.be.true;
       expect(status).to.be.equal(200);
     });
   });
@@ -84,10 +83,9 @@ describe('Test matches path', () => {
 
       const { body, status } = chaiHttpResponse;
 
-      expect(body).to.have.length(3);
-      expect(body[0].inProgess).to.be.false;
-      expect(body[1].inProgess).to.be.false;
-      expect(body[2].inProgess).to.be.false;
+      expect(body).to.have.length(2);
+      expect(body[0].inProgress).to.be.false;
+      expect(body[1].inProgress).to.be.false;
       expect(status).to.be.equal(200);
     });
   });
