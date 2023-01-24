@@ -1,3 +1,4 @@
+import { IPostBodyMatch } from '../interfaces/IMatches';
 import Matches from '../database/models/matches.model';
 import Team from '../database/models/team.model';
 
@@ -25,4 +26,10 @@ export default class MatchesService {
 
     return response;
   }
+
+  static async create(matchData: IPostBodyMatch): Promise<Matches> {
+    const response = await Matches.create({ ...matchData, inProgress: true });
+
+    return response;
+  };
 }

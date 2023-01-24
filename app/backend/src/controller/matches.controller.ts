@@ -20,4 +20,20 @@ export default class MacthesController {
       next(error);
     }
   }
+
+  static async createMatch(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals } = req.body;
+      const response = await MatchesService.create({
+        homeTeamId,
+        homeTeamGoals,
+        awayTeamGoals,
+        awayTeamId,
+      });
+
+      res.status(201).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
