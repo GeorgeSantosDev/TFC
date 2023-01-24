@@ -58,4 +58,20 @@ export const matchesInProgressFalse = [
       "teamName": "Avaí/Kindermann"
     }
   }
-]
+];
+
+export const postBody = {
+  "homeTeamId": 16, 
+  "awayTeamId": 8, 
+  "homeTeamGoals": 2,
+  "awayTeamGoals": 2,
+};
+
+export const postResponse = {
+  "id": 1,
+  "homeTeamId": 16,
+  "homeTeamGoals": 2,
+  "awayTeamId": 8,
+  "awayTeamGoals": 2,
+  "inProgress": true,
+};

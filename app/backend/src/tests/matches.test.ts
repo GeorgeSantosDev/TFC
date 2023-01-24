@@ -5,8 +5,8 @@ import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 import Matches from '../database/models/matches.model';
-import { matchesInProgressTrue, matchesInProgressFalse } from './mocks/matches.mocks';
-import IMatches from '../interfaces/IMatches'
+import { matchesInProgressTrue, matchesInProgressFalse, postResponse, postBody } from './mocks/matches.mocks';
+import IMatches, { IPostBodyMatch } from '../interfaces/IMatches'
 import { Response } from 'superagent';
 
 chai.use(chaiHttp);
@@ -87,6 +87,30 @@ describe('Test matches path', () => {
       expect(body[0].inProgress).to.be.false;
       expect(body[1].inProgress).to.be.false;
       expect(status).to.be.equal(200);
+    });
+  });
+
+  describe('Test if is possible create new match', () => {
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Matches, "create")
+        .resolves(postResponse as IPostBodyMatch | any);
+    });
+
+    after(() => {
+      (Matches.create as sinon.SinonStub).restore();
+    })
+
+    it('should return a object of Macth as Response and status 201', async () => {
+      chaiHttpResponse = await chai.request(app).post('/matches').send(postBody);
+
+      const { body, status } = chaiHttpResponse;
+
+      expect(status).to.be.equal(201);
+      expect(body.inProgress).to.be.true;
+      expect(body).to.have.property('id');
     });
   });
 
