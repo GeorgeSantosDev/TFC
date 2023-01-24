@@ -75,3 +75,19 @@ export const postResponse = {
   "awayTeamGoals": 2,
   "inProgress": true,
 };
+
+export const postBodySameTeam = {
+  "homeTeamId": 16, 
+  "awayTeamId": 16, 
+  "homeTeamGoals": 2,
+  "awayTeamGoals": 2,
+}
+
+export const postBodyTeamDoesNotExist = {
+  "homeTeamId": 852, 
+  "awayTeamId": 16, 
+  "homeTeamGoals": 2,
+  "awayTeamGoals": 2,
+}
+
+export const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwicm9sZSI6ImFkbWluIn0sImlhdCI6MTY3NDU5NDI1MSwiZXhwIjoxNjc0NTk3ODUxfQ.2dcDmAjlcpj_gCG_qdMb9iNUfXEeR2PZMlIi_Qbd0Lg';

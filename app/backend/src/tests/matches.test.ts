@@ -5,7 +5,16 @@ import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 import Matches from '../database/models/matches.model';
-import { matchesInProgressTrue, matchesInProgressFalse, postResponse, postBody } from './mocks/matches.mocks';
+import User from '../database/models/user.model';
+import { user, loginBody } from './mocks/user.mocks';
+import { matchesInProgressTrue,
+  matchesInProgressFalse,
+  postResponse,
+  postBody,
+  postBodySameTeam, 
+  postBodyTeamDoesNotExist,
+  invalidToken} from './mocks/matches.mocks';
+
 import IMatches, { IPostBodyMatch } from '../interfaces/IMatches'
 import { Response } from 'superagent';
 
@@ -114,4 +123,55 @@ describe('Test matches path', () => {
     });
   });
 
+  describe('Test validations for create new Match', () => {
+    let chaiHttpResponse: Response;
+    let chaiHttpResponse2: Response;
+
+    before(async () => {
+      sinon
+        .stub(User, "findOne")
+        .resolves(user as User);
+    });
+
+    after(() => {
+      (User.findOne as sinon.SinonStub).restore();
+    })
+
+    it('should return a message It is not possible to create a match with two equal teams /\
+     and status 422', async () => {
+      chaiHttpResponse2 = await chai.request(app).post('/login').send(loginBody);
+      const { body: { token } } = chaiHttpResponse2;
+
+      chaiHttpResponse = await chai.request(app).post('/matches').send(postBodySameTeam).set({ Authorization:  token});
+
+      const { body, status } = chaiHttpResponse;
+
+      expect(status).to.be.equal(422);
+      expect(body).to.have.property('message');
+      expect(body.message).to.be('It is not possible to create a match with two equal teams');
+    });
+
+    it('should return a message There is no team with such id! and status 422', async () => {
+      chaiHttpResponse2 = await chai.request(app).post('/login').send(loginBody);
+      const { body: { token } } = chaiHttpResponse2;
+     chaiHttpResponse = await chai.request(app).post('/matches').send(postBodyTeamDoesNotExist).set({ Authorization:  token});
+
+     const { body, status } = chaiHttpResponse;
+
+     expect(status).to.be.equal(404);
+     expect(body).to.have.property('message');
+     expect(body.message).to.be('There is no team with such id!');
+   });
+
+   it('should return a message Token must be a valid token and status 401', async () => {
+   chaiHttpResponse = await chai.request(app).post('/matches').send(postBodyTeamDoesNotExist).set({ Authorization:  invalidToken});
+
+   const { body, status } = chaiHttpResponse;
+
+   expect(status).to.be.equal(401);
+   expect(body).to.have.property('message');
+   expect(body.message).to.be('Token must be a valid token');
+ });
+    
+  });
 });
