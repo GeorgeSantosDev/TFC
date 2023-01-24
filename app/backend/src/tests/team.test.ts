@@ -19,27 +19,19 @@ describe('Test team path', () => {
 
   describe('Test if is possible getAll teams', () => {
     let chaiHttpResponse: Response;
-    let chaiHttpResponse2: Response;
 
     before(async () => {
       sinon
         .stub(Team, "findAll")
         .resolves(allTeams as Team[]);
-      sinon
-        .stub(User, "findOne")
-        .resolves(user as User);
     });
 
     after(() => {
       (Team.findAll as sinon.SinonStub).restore();
-      (User.findOne as sinon.SinonStub).restore();
     })
 
     it('should return all teams as Response and status 200', async () => {
-      chaiHttpResponse2 = await chai.request(app).post('/login').send(loginBody);
-      const { body: { token } } = chaiHttpResponse2;
-
-      chaiHttpResponse = await chai.request(app).get('/teams').set({ Authorization:  token});
+      chaiHttpResponse = await chai.request(app).get('/teams');
 
       const { body, status } = chaiHttpResponse;
 
@@ -52,27 +44,21 @@ describe('Test team path', () => {
 
   describe('Test if is possible  get one team by id', () => {
     let chaiHttpResponse: Response;
-    let chaiHttpResponse2: Response;
+
 
     before(async () => {
       sinon
         .stub(Team, "findByPk")
         .resolves(team as Team);
-      sinon
-        .stub(User, "findOne")
-        .resolves(user as User);
     });
 
     after(() => {
       (Team.findByPk as sinon.SinonStub).restore();
-      (User.findOne as sinon.SinonStub).restore();
     })
 
     it('should return one team as Response and status 200', async () => {
-      chaiHttpResponse2 = await chai.request(app).post('/login').send(loginBody);
-      const { body: { token } } = chaiHttpResponse2;
 
-      chaiHttpResponse = await chai.request(app).get('/teams/1').set({ Authorization:  token});
+      chaiHttpResponse = await chai.request(app).get('/teams/1');
 
       const { body, status } = chaiHttpResponse;
 
@@ -85,27 +71,19 @@ describe('Test team path', () => {
 
   describe('Test if is possible get one team that does not exist by id', () => {
     let chaiHttpResponse: Response;
-    let chaiHttpResponse2: Response;
 
     before(async () => {
       sinon
         .stub(Team, "findByPk")
         .resolves(null);
-      sinon
-        .stub(User, "findOne")
-        .resolves(user as User);
     });
 
     after(() => {
       (Team.findByPk as sinon.SinonStub).restore();
-      (User.findOne as sinon.SinonStub).restore();
     })
 
     it('should return status 404 and message Team does not exist', async () => {
-      chaiHttpResponse2 = await chai.request(app).post('/login').send(loginBody);
-      const { body: { token } } = chaiHttpResponse2;
-
-      chaiHttpResponse = await chai.request(app).get('/teams/15').set({ Authorization:  token});
+      chaiHttpResponse = await chai.request(app).get('/teams/15');
 
       const { body, status } = chaiHttpResponse;
 
