@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { loginRouter, teamsRouter } from './routes';
+import { loginRouter, teamsRouter, matchesRouter } from './routes';
 import ErrorMiddleware from './middlewares/errorMiddleware';
 import HttpException from './utils/HttpException';
 
@@ -25,6 +25,7 @@ class App {
   private routes(): void {
     this.app.use('/login', loginRouter);
     this.app.use('/teams', teamsRouter);
+    this.app.use('/matches', matchesRouter);
   }
 
   private config():void {
