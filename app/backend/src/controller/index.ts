@@ -7,5 +7,5 @@ export {
   LoginController,
   TeamController,
   MacthesController,
-  LeaderBoardController
+  LeaderBoardController,
 };
