@@ -1,4 +1,3 @@
-import { ResultSetHeader } from 'mysql2/promise';
 import { IPostBodyMatch } from '../interfaces/IMatches';
 import Matches from '../database/models/matches.model';
 import Team from '../database/models/team.model';
