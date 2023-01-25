@@ -1,3 +1,4 @@
+import { ResultSetHeader } from 'mysql2/promise';
 import { IPostBodyMatch } from '../interfaces/IMatches';
 import Matches from '../database/models/matches.model';
 import Team from '../database/models/team.model';
@@ -31,5 +32,22 @@ export default class MatchesService {
     const response = await Matches.create({ ...matchData, inProgress: true });
 
     return response;
-  };
+  }
+
+  static async updateProgress(id: number): Promise<[affectedRows: number]> {
+    const response = await Matches.update({ inProgress: false }, {
+      where: { id },
+    });
+
+    return response;
+  }
+
+  static async updateGoals(id: number, homeTeamGoals: number, awayTeamGoals: number):
+  Promise<[affectedRows: number]> {
+    const response = await Matches.update({ homeTeamGoals, awayTeamGoals }, {
+      where: { id },
+    });
+
+    return response;
+  }
 }

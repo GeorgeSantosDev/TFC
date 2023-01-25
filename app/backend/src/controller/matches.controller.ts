@@ -36,4 +36,28 @@ export default class MacthesController {
       next(error);
     }
   }
+
+  static async updateProgress(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+      const [response] = await MatchesService.updateProgress(Number(id));
+
+      if (response === 1) res.status(200).json({ message: 'Finished' });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateGoals(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { homeTeamGoals, awayTeamGoals } = req.body;
+
+      const [response] = await MatchesService.updateGoals(Number(id), homeTeamGoals, awayTeamGoals);
+
+      if (response === 2) res.status(200).json({ message: 'Scoreboard was updated!' });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
