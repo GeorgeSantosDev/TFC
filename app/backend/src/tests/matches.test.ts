@@ -7,13 +7,16 @@ import { app } from '../app';
 import Matches from '../database/models/matches.model';
 import User from '../database/models/user.model';
 import { user, loginBody } from './mocks/user.mocks';
-import { matchesInProgressTrue,
+import {
+  matchesInProgressTrue,
   matchesInProgressFalse,
   postResponse,
   postBody,
-  postBodySameTeam, 
+  postBodySameTeam,
   postBodyTeamDoesNotExist,
-  invalidToken} from './mocks/matches.mocks';
+  invalidToken,
+  updateGoals
+} from './mocks/matches.mocks';
 
 import IMatches, { IPostBodyMatch } from '../interfaces/IMatches'
 import { Response } from 'superagent';
@@ -101,19 +104,26 @@ describe('Test matches path', () => {
 
   describe('Test if is possible create new match', () => {
     let chaiHttpResponse: Response;
+    let chaiHttpResponse2: Response;
 
     before(async () => {
       sinon
         .stub(Matches, "create")
         .resolves(postResponse as IPostBodyMatch | any);
+      sinon
+        .stub(User, "findOne")
+        .resolves(user as User);
     });
 
     after(() => {
       (Matches.create as sinon.SinonStub).restore();
+      (User.findOne as sinon.SinonStub).restore();
     })
 
     it('should return a object of Macth as Response and status 201', async () => {
-      chaiHttpResponse = await chai.request(app).post('/matches').send(postBody);
+      chaiHttpResponse2 = await chai.request(app).post('/login').send(loginBody);
+      const { body: { token } } = chaiHttpResponse2;
+      chaiHttpResponse = await chai.request(app).post('/matches').send(postBody).set({ Authorization: token });
 
       const { body, status } = chaiHttpResponse;
 
@@ -142,36 +152,83 @@ describe('Test matches path', () => {
       chaiHttpResponse2 = await chai.request(app).post('/login').send(loginBody);
       const { body: { token } } = chaiHttpResponse2;
 
-      chaiHttpResponse = await chai.request(app).post('/matches').send(postBodySameTeam).set({ Authorization:  token});
+      chaiHttpResponse = await chai.request(app).post('/matches').send(postBodySameTeam).set({ Authorization: token });
 
       const { body, status } = chaiHttpResponse;
-
       expect(status).to.be.equal(422);
       expect(body).to.have.property('message');
-      expect(body.message).to.be('It is not possible to create a match with two equal teams');
+      expect(body.message).to.be.equal('It is not possible to create a match with two equal teams');
     });
 
     it('should return a message There is no team with such id! and status 422', async () => {
       chaiHttpResponse2 = await chai.request(app).post('/login').send(loginBody);
       const { body: { token } } = chaiHttpResponse2;
-     chaiHttpResponse = await chai.request(app).post('/matches').send(postBodyTeamDoesNotExist).set({ Authorization:  token});
+      chaiHttpResponse = await chai.request(app).post('/matches').send(postBodyTeamDoesNotExist).set({ Authorization: token });
 
-     const { body, status } = chaiHttpResponse;
+      const { body, status } = chaiHttpResponse;
 
-     expect(status).to.be.equal(404);
-     expect(body).to.have.property('message');
-     expect(body.message).to.be('There is no team with such id!');
-   });
+      expect(status).to.be.equal(404);
+      expect(body).to.have.property('message');
+      expect(body.message).to.be.equal('There is no team with such id!');
+    });
 
-   it('should return a message Token must be a valid token and status 401', async () => {
-   chaiHttpResponse = await chai.request(app).post('/matches').send(postBodyTeamDoesNotExist).set({ Authorization:  invalidToken});
+    it('should return a message Token must be a valid token and status 401', async () => {
+      chaiHttpResponse = await chai.request(app).post('/matches').send(postBodyTeamDoesNotExist).set({ Authorization: invalidToken });
 
-   const { body, status } = chaiHttpResponse;
+      const { body, status } = chaiHttpResponse;
 
-   expect(status).to.be.equal(401);
-   expect(body).to.have.property('message');
-   expect(body.message).to.be('Token must be a valid token');
- });
-    
+      expect(status).to.be.equal(401);
+      expect(body).to.have.property('message');
+      expect(body.message).to.be.equal('Token must be a valid token');
+    });
+
+  });
+
+  describe('Test if is possible update a match', () => {
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Matches, "update")
+        .resolves([1]);
+    });
+
+    after(() => {
+      (Matches.update as sinon.SinonStub).restore();
+    })
+
+    it('should return a message Finished and status 200', async () => {
+      chaiHttpResponse = await chai.request(app).patch('/matches/1/finish');
+
+      const { body, status } = chaiHttpResponse;
+
+      expect(status).to.be.equal(200);
+      expect(body).to.have.property('message');
+      expect(body.message).to.be.equal('Finished');
+    });
+  });
+
+  describe('Test if is possible update a match', () => {
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Matches, "update")
+        .resolves([2]);
+    });
+
+    after(() => {
+      (Matches.update as sinon.SinonStub).restore();
+    })
+
+    it('should return a message Scoreboard was updated! and status 200', async () => {
+      chaiHttpResponse = await chai.request(app).patch('/matches/1').send(updateGoals);
+  
+      const { body, status } = chaiHttpResponse;
+  
+      expect(status).to.be.equal(200);
+      expect(body).to.have.property('message');
+      expect(body.message).to.be.equal('Scoreboard was updated!');
+    });
   });
 });
