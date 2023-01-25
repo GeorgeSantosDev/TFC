@@ -55,7 +55,7 @@ export default class MacthesController {
 
       const [response] = await MatchesService.updateGoals(Number(id), homeTeamGoals, awayTeamGoals);
 
-      if (response === 2) res.status(200).json({ message: 'Scoreboard was updated!' });
+      if (response === 1) res.status(200).json({ message: 'Scoreboard was updated!' });
     } catch (error) {
       next(error);
     }
