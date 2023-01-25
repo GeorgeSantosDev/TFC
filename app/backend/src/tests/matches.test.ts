@@ -214,7 +214,7 @@ describe('Test matches path', () => {
     before(async () => {
       sinon
         .stub(Matches, "update")
-        .resolves([2]);
+        .resolves([1]);
     });
 
     after(() => {
