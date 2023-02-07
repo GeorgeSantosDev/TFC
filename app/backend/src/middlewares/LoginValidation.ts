@@ -4,22 +4,20 @@ import HttpException from '../utils/HttpException';
 import { LoginService } from '../service';
 import Crypt from '../utils/Bcrypt';
 
+const service = new LoginService();
+
 export default class LoginValidation {
-  static fieldsValidation(req: Request, _res: Response, next: NextFunction): void {
-    try {
-      const { email, password } = req.body as ILogin;
+  constructor(private _service = service) { this._service = _service; }
 
-      if (!email || !password) {
-        throw new HttpException(400, 'All fields must be filled');
-      }
+  static fieldsValidation(req: ILogin): void {
+    const { email, password } = req;
 
-      next();
-    } catch (error) {
-      next(error);
+    if (!email || !password) {
+      throw new HttpException(400, 'All fields must be filled');
     }
   }
 
-  static async credentialValidation(
+  public async credentialValidation(
     req: Request,
     _res: Response,
     next: NextFunction,
@@ -27,7 +25,9 @@ export default class LoginValidation {
     try {
       const { email, password } = req.body as ILogin;
 
-      const response = await LoginService.getUser(email);
+      LoginValidation.fieldsValidation({ email, password });
+
+      const response = await this._service.getUser(email);
 
       if (!response || !Crypt.verify(password, response.password)) {
         throw new HttpException(401, 'Incorrect email or password');

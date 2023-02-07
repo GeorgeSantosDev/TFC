@@ -1,7 +1,9 @@
 import * as express from 'express';
-import { loginRouter, teamsRouter, matchesRouter, leaderBoardRouter } from './routes';
+import { Login, teamsRouter, matchesRouter, leaderBoardRouter } from './routes';
 import ErrorMiddleware from './middlewares/errorMiddleware';
 import HttpException from './utils/HttpException';
+
+const loginRouter = new Login();
 
 class App {
   public app: express.Express;
@@ -23,7 +25,7 @@ class App {
   }
 
   private routes(): void {
-    this.app.use('/login', loginRouter);
+    this.app.use('/login', loginRouter.route);
     this.app.use('/teams', teamsRouter);
     this.app.use('/matches', matchesRouter);
     this.app.use('/leaderboard', leaderBoardRouter);

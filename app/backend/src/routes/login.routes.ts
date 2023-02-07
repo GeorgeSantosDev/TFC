@@ -1,22 +1,24 @@
 import { Router } from 'express';
 import { LoginController } from '../controller';
 import LoginValidation from '../middlewares/LoginValidation';
-import Token from '../auth/JWT';
 
 const loginRouter = Router();
-const token = new Token();
+const validation = new LoginValidation();
+const controller = new LoginController();
 
-loginRouter.post(
-  '/',
-  (req, res, next) => LoginValidation.fieldsValidation(req, res, next),
-  (req, res, next) => LoginValidation.credentialValidation(req, res, next),
-  (req, res, next) => LoginController.login(req, res, next),
-);
+export default class Login {
+  constructor(public route = loginRouter) {
+    this.route = route;
 
-loginRouter.get(
-  '/validate',
-  (req, res, next) => token.validate(req, res, next),
-  (req, res, next) => LoginController.validateRole(req, res, next),
-);
+    this.route.post(
+      '/',
+      (req, res, next) => validation.credentialValidation(req, res, next),
+      (req, res, next) => controller.login(req, res, next),
+    );
 
-export default loginRouter;
+    this.route.get(
+      '/validate',
+      (req, res, next) => controller.validateRole(req, res, next),
+    );
+  }
+}
