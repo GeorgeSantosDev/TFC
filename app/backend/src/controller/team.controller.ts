@@ -2,10 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import HttpException from '../utils/HttpException';
 import { TeamService } from '../service';
 
+const service = new TeamService();
+
 export default class TeamController {
-  static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+  constructor(private _service = service) { this._service = _service; }
+
+  public async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const response = await TeamService.getAll();
+      const response = await this._service.getAll();
 
       res.status(200).json(response);
     } catch (error) {
@@ -13,10 +17,10 @@ export default class TeamController {
     }
   }
 
-  static async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
-      const response = await TeamService.getById(Number(id));
+      const response = await this._service.getById(Number(id));
 
       if (!response) throw new HttpException(404, 'Team does not exist');
 

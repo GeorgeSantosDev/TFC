@@ -3,6 +3,8 @@ import HttpException from '../utils/HttpException';
 import { TeamService } from '../service';
 import { IPostBodyMatch } from '../interfaces/IMatches';
 
+const service = new TeamService();
+
 export default class MatchesValidations {
   static async validateTeams(req: Request, _res: Response, next: NextFunction): Promise<void> {
     try {
@@ -12,7 +14,7 @@ export default class MatchesValidations {
         throw new HttpException(422, 'It is not possible to create a match with two equal teams');
       }
 
-      const allTeams = await TeamService.getAll();
+      const allTeams = await service.getAll();
 
       const bothTeamsExist = allTeams
         .filter((team) => team.id === homeTeamId || team.id === awayTeamId);

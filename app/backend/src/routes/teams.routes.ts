@@ -1,16 +1,20 @@
 import { Router } from 'express';
 import { TeamController } from '../controller';
 
-const teamsRouter = Router();
+const controller = new TeamController();
 
-teamsRouter.get(
-  '/',
-  (req, res, next) => TeamController.getAll(req, res, next),
-);
+export default class TeamRoute {
+  constructor(public route = Router()) {
+    this.route = route;
 
-teamsRouter.get(
-  '/:id',
-  (req, res, next) => TeamController.getById(req, res, next),
-);
+    this.route.get(
+      '/',
+      (req, res, next) => controller.getAll(req, res, next),
+    );
 
-export default teamsRouter;
+    this.route.get(
+      '/:id',
+      (req, res, next) => controller.getById(req, res, next),
+    );
+  }
+}
