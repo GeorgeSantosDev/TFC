@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { MatchesService } from '../service';
 
+const service = new MatchesService();
+
 export default class MacthesController {
-  static async getAllMatches(req: Request, res: Response, next: NextFunction):
+  constructor(private _service = service) { this._service = _service; }
+
+  public async getAllMatches(req: Request, res: Response, next: NextFunction):
   Promise<Response | void> {
     try {
       const { inProgress } = req.query;
@@ -10,21 +14,21 @@ export default class MacthesController {
       const progress = ['true', 'false'];
 
       if (!inProgress || !progress.includes(inProgress as string)) {
-        const response = await MatchesService.getAll();
+        const response = await this._service.getAll();
         return res.status(200).json(response);
       }
 
-      const response = await MatchesService.getByProgress(status);
+      const response = await this._service.getByProgress(status);
       res.status(200).json(response);
     } catch (error) {
       next(error);
     }
   }
 
-  static async createMatch(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async createMatch(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals } = req.body;
-      const response = await MatchesService.create({
+      const response = await this._service.create({
         homeTeamId,
         homeTeamGoals,
         awayTeamGoals,
@@ -37,10 +41,10 @@ export default class MacthesController {
     }
   }
 
-  static async updateProgress(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async updateProgress(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
-      const [response] = await MatchesService.updateProgress(Number(id));
+      const [response] = await this._service.updateProgress(Number(id));
 
       if (response === 1) res.status(200).json({ message: 'Finished' });
     } catch (error) {
@@ -48,12 +52,12 @@ export default class MacthesController {
     }
   }
 
-  static async updateGoals(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public async updateGoals(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
       const { homeTeamGoals, awayTeamGoals } = req.body;
 
-      const [response] = await MatchesService.updateGoals(Number(id), homeTeamGoals, awayTeamGoals);
+      const [response] = await this._service.updateGoals(Number(id), homeTeamGoals, awayTeamGoals);
 
       if (response === 1) res.status(200).json({ message: 'Scoreboard was updated!' });
     } catch (error) {

@@ -3,8 +3,10 @@ import Matches from '../database/models/matches.model';
 import Team from '../database/models/team.model';
 
 export default class MatchesService {
-  static async getAll(): Promise<Matches[]> {
-    const response = await Matches.findAll({
+  constructor(private _model = Matches) { this._model = _model; }
+
+  public async getAll(): Promise<Matches[]> {
+    const response = await this._model.findAll({
       include: [
         { model: Team, as: 'homeTeam', attributes: ['teamName'] },
         { model: Team, as: 'awayTeam', attributes: ['teamName'] },
@@ -14,8 +16,8 @@ export default class MatchesService {
     return response;
   }
 
-  static async getByProgress(bool: boolean): Promise<Matches[]> {
-    const response = await Matches.findAll({
+  public async getByProgress(bool: boolean): Promise<Matches[]> {
+    const response = await this._model.findAll({
       include: [
         { model: Team, as: 'homeTeam', attributes: ['teamName'] },
         { model: Team, as: 'awayTeam', attributes: ['teamName'] },
@@ -27,23 +29,23 @@ export default class MatchesService {
     return response;
   }
 
-  static async create(matchData: IPostBodyMatch): Promise<Matches> {
-    const response = await Matches.create({ ...matchData, inProgress: true });
+  public async create(matchData: IPostBodyMatch): Promise<Matches> {
+    const response = await this._model.create({ ...matchData, inProgress: true });
 
     return response;
   }
 
-  static async updateProgress(id: number): Promise<[affectedRows: number]> {
-    const response = await Matches.update({ inProgress: false }, {
+  public async updateProgress(id: number): Promise<[affectedRows: number]> {
+    const response = await this._model.update({ inProgress: false }, {
       where: { id },
     });
 
     return response;
   }
 
-  static async updateGoals(id: number, homeTeamGoals: number, awayTeamGoals: number):
+  public async updateGoals(id: number, homeTeamGoals: number, awayTeamGoals: number):
   Promise<[affectedRows: number]> {
-    const response = await Matches.update({ homeTeamGoals, awayTeamGoals }, {
+    const response = await this._model.update({ homeTeamGoals, awayTeamGoals }, {
       where: { id },
     });
 

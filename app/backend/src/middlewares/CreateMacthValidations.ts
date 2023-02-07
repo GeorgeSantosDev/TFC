@@ -2,12 +2,17 @@ import { Request, Response, NextFunction } from 'express';
 import HttpException from '../utils/HttpException';
 import { TeamService } from '../service';
 import { IPostBodyMatch } from '../interfaces/IMatches';
+import Token from '../auth/JWT';
 
+const token = new Token();
 const service = new TeamService();
 
 export default class MatchesValidations {
-  static async validateTeams(req: Request, _res: Response, next: NextFunction): Promise<void> {
+  constructor(private _token = token) { this._token = _token; }
+
+  public async validateTeams(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      this._token.validate(req, res, next);
       const { homeTeamId, awayTeamId } = req.body as IPostBodyMatch;
 
       if (homeTeamId === awayTeamId) {
