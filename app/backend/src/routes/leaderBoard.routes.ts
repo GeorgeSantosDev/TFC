@@ -1,21 +1,24 @@
 import { Router } from 'express';
 import { LeaderBoardController } from '../controller';
 
-const leaderBoardRouter = Router();
+const controller = new LeaderBoardController();
 
-leaderBoardRouter.get(
-  '/',
-  (req, res, next) => LeaderBoardController.generalClassification(req, res, next),
-);
+export default class LeaderBoardRoute {
+  constructor(public route = Router()) {
+    this.route = route;
 
-leaderBoardRouter.get(
-  '/home',
-  (req, res, next) => LeaderBoardController.homeClassification(req, res, next),
-);
+    this.route.get(
+      '/',
+      (req, res, next) => controller.generalClassification(req, res, next),
+    );
 
-leaderBoardRouter.get(
-  '/away',
-  (req, res, next) => LeaderBoardController.awayClassification(req, res, next),
-);
-
-export default leaderBoardRouter;
+    this.route.get(
+      '/home',
+      (req, res, next) => controller.homeClassification(req, res, next),
+    );
+    this.route.get(
+      '/away',
+      (req, res, next) => controller.awayClassification(req, res, next),
+    );
+  }
+}

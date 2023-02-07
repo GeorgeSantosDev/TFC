@@ -1,11 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import { LeaderBoardService } from '../service';
 
+const service = new LeaderBoardService();
+
 export default class LeaderBoardController {
-  static async homeClassification(req: Request, res: Response, next: NextFunction):
+  constructor(private _service = service) { this._service = _service; }
+
+  public async homeClassification(_req: Request, res: Response, next: NextFunction):
   Promise<void> {
     try {
-      const response = await LeaderBoardService.getHomeClassification();
+      const response = await this._service.getHomeClassification();
 
       res.status(200).json(response);
     } catch (error) {
@@ -13,10 +17,10 @@ export default class LeaderBoardController {
     }
   }
 
-  static async awayClassification(req: Request, res: Response, next: NextFunction):
+  public async awayClassification(_req: Request, res: Response, next: NextFunction):
   Promise<void> {
     try {
-      const response = await LeaderBoardService.getAwayClassification();
+      const response = await this._service.getAwayClassification();
 
       res.status(200).json(response);
     } catch (error) {
@@ -24,10 +28,10 @@ export default class LeaderBoardController {
     }
   }
 
-  static async generalClassification(req: Request, res: Response, next: NextFunction):
+  public async generalClassification(_req: Request, res: Response, next: NextFunction):
   Promise<void> {
     try {
-      const response = await LeaderBoardService.getGeneralClassification();
+      const response = await this._service.getGeneralClassification();
 
       res.status(200).json(response);
     } catch (error) {

@@ -1,11 +1,12 @@
 import * as express from 'express';
-import { Login, TeamRoute, MatchesRoute, leaderBoardRouter } from './routes';
+import { Login, TeamRoute, MatchesRoute, LeaderBoardRoute } from './routes';
 import ErrorMiddleware from './middlewares/errorMiddleware';
 import HttpException from './utils/HttpException';
 
 const loginRouter = new Login();
 const teamsRouter = new TeamRoute();
 const matchesRouter = new MatchesRoute();
+const leaderBoardRouter = new LeaderBoardRoute();
 
 class App {
   public app: express.Express;
@@ -30,7 +31,7 @@ class App {
     this.app.use('/login', loginRouter.route);
     this.app.use('/teams', teamsRouter.route);
     this.app.use('/matches', matchesRouter.route);
-    this.app.use('/leaderboard', leaderBoardRouter);
+    this.app.use('/leaderboard', leaderBoardRouter.route);
   }
 
   private config():void {
